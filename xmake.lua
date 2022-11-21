@@ -1,11 +1,11 @@
 includes("build_proj.lua")
-ConfigProject({
+_config_project({
 	project_name = "spdlog",
 	project_kind = "shared",
 	batch_size = 64
 })
-local add_includedirs = GetAddIncludeDirs()
-local add_defines = GetAddDefines()
+local add_includedirs = _get_add_includedirs()
+local add_defines = _get_add_defines()
 add_includedirs("../fmt/include/", "include/", {
 	public = true
 })

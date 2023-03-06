@@ -5,8 +5,6 @@ _config_project({
 	batch_size = 64,
 	no_rtti = true
 })
-local add_includedirs = _get_add_includedirs()
-local add_defines = _get_add_defines()
 add_includedirs("include/", {
 	public = true
 })

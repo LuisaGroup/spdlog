@@ -1,6 +1,6 @@
 includes("build_proj.lua")
+target("spdlog")
 _config_project({
-	project_name = "spdlog",
 	project_kind = "shared",
 	batch_size = 64,
 	no_rtti = true

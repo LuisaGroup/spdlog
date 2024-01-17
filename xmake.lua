@@ -12,8 +12,7 @@ on_load(function(target)
 	target:add("includedirs", rela("include"), {
 		public = true
 	})
-	target:add("defines", "SPDLOG_NO_EXCEPTIONS", "SPDLOG_NO_THREAD_ID", "SPDLOG_DISABLE_DEFAULT_LOGGER", "FMT_SHARED",
-					"SPDLOG_SHARED_LIB", "FMT_CONSTEVAL=constexpr", "FMT_USE_CONSTEXPR=1", "FMT_EXCEPTIONS=0", {
+	target:add("defines", "SPDLOG_NO_EXCEPTIONS", "SPDLOG_NO_THREAD_ID", "SPDLOG_DISABLE_DEFAULT_LOGGER", "FMT_SHARED", "FMT_CONSTEVAL=constexpr", "FMT_USE_CONSTEXPR=1", "FMT_EXCEPTIONS=0", {
 						public = true
 					})
 	target:add("defines", "FMT_EXPORT", "spdlog_EXPORTS", "SPDLOG_COMPILED_LIB")

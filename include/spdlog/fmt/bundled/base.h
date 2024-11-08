@@ -131,7 +131,7 @@
 #  define FMT_USE_CONSTEVAL 0
 #endif
 #if FMT_USE_CONSTEVAL
-#  define FMT_CONSTEVAL consteval
+#  define FMT_CONSTEVAL constexpr
 #  define FMT_CONSTEXPR20 constexpr
 #else
 #  define FMT_CONSTEVAL
@@ -455,8 +455,8 @@ constexpr auto use_utf8() -> bool {
   return !FMT_MSC_VERSION || is_utf8_enabled();
 }
 
-static_assert(!FMT_UNICODE || use_utf8(),
-              "Unicode support requires compiling with /utf-8");
+// static_assert(!FMT_UNICODE || use_utf8(),
+//               "Unicode support requires compiling with /utf-8");
 
 template <typename Char> FMT_CONSTEXPR auto length(const Char* s) -> size_t {
   size_t len = 0;

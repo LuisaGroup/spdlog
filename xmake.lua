@@ -1,4 +1,21 @@
-includes("build_proj.lua")
+if not _config_project then
+    function _config_project(config)
+        local batch_size = config["batch_size"]
+        if type(batch_size) == "number" and batch_size > 1 and (not _disable_unity_build) then
+            add_rules("c.unity_build", {
+                batchsize = batch_size
+            })
+            add_rules("c++.unity_build", {
+                batchsize = batch_size
+            })
+        end
+        if type(_config_rules) == "table" then
+            add_rules(_config_rules, config)
+        end
+    end
+end
+
+
 target("spdlog")
 _config_project({
     project_kind = "static",

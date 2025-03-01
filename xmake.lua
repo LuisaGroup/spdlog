@@ -29,14 +29,14 @@ on_load(function(target)
         return path.relative(path.absolute(p, os.scriptdir()), os.projectdir())
     end
     if get_config("spdlog_only_fmt") then
-        target:add("defines", "FMT_USE_CONSTEVAL=0", "FMT_USE_CONSTEXPR=1", "FMT_EXCEPTIONS=0", {
+        target:add("defines", "FMT_USE_CONSTEVAL=0", "FMT_USE_CONSTEXPR=1", "FMT_UNICODE=0", "FMT_EXCEPTIONS=0", {
             public = true
         })
         target:add("headerfiles", rela("include/spdlog/fmt/**.h"))
         target:add("files", rela("src/bundled_fmtlib_format.cpp"))
     else
         target:add("defines", "SPDLOG_NO_EXCEPTIONS", "SPDLOG_NO_THREAD_ID", "SPDLOG_DISABLE_DEFAULT_LOGGER",
-            "FMT_USE_CONSTEVAL=0", "FMT_USE_CONSTEXPR=1", "FMT_EXCEPTIONS=0", {
+            "FMT_UNICODE=0", "FMT_USE_CONSTEVAL=0", "FMT_USE_CONSTEXPR=1", "FMT_EXCEPTIONS=0", {
                 public = true
             })
         target:add("headerfiles", rela("include/**.h"))

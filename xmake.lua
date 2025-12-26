@@ -48,5 +48,9 @@ on_load(function(target)
     target:add("defines", "SPDLOG_COMPILED_LIB", {
         public = true
     })
+    target:add("cxflags", "/utf-8", {
+        tools = "cl",
+        public = true
+    })
 end)
 target_end()

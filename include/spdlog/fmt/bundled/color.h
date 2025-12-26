@@ -10,13 +10,6 @@
 
 #include "format.h"
 
-#if defined(_MSC_VER) && !(defined(__clang__))
-#pragma warning( push )
-#pragma warning( disable : 4819 )
-// Your function
-#pragma warning( pop )
-#endif
-
 FMT_BEGIN_NAMESPACE
 FMT_BEGIN_EXPORT
 

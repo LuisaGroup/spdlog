@@ -168,6 +168,7 @@ TEST_CASE("rotating_file_logger_no_premature_rotation_after_manual_rotate",
 }
 
 // test that passing max_size=0 throws
+#ifndef SPDLOG_NO_EXCEPTIONS
 TEST_CASE("rotating_file_logger3", "[rotating_logger]") {
     prepare_logdir();
     size_t max_size = 0;
@@ -175,6 +176,7 @@ TEST_CASE("rotating_file_logger3", "[rotating_logger]") {
     REQUIRE_THROWS_AS(spdlog::rotating_logger_mt("logger", basename, max_size, 0),
                       spdlog::spdlog_ex);
 }
+#endif  // SPDLOG_NO_EXCEPTIONS
 
 // test on-demand rotation of logs
 TEST_CASE("rotating_file_logger4", "[rotating_logger]") {
@@ -241,4 +243,66 @@ TEST_CASE("rotating_file_logger5", "[rotating_logger]") {
             REQUIRE(filesize >= max_size - message.size() - 2);
         }
     }
+}
+
+TEST_CASE("custom_buffer_size_basic", "[file_helper]") {
+    prepare_logdir();
+    spdlog::filename_t filename = SPDLOG_FILENAME_T(SIMPLE_LOG);
+    size_t custom_buf_size = 64 * 1024;
+
+    auto logger = spdlog::basic_logger_mt("custom_buf_logger", filename, false, {}, custom_buf_size);
+    logger->set_pattern("%v");
+
+    auto sink = std::dynamic_pointer_cast<spdlog::sinks::basic_file_sink_mt>(logger->sinks().front());
+    REQUIRE(sink != nullptr);
+    REQUIRE(sink->buffer_size() == custom_buf_size);
+
+    logger->info("Buffered message 1");
+    logger->info("Buffered message 2");
+    logger->flush();
+
+    require_message_count(SIMPLE_LOG, 2);
+    using spdlog::details::os::default_eol;
+    REQUIRE(file_contents(SIMPLE_LOG) ==
+            spdlog::fmt_lib::format("Buffered message 1{}Buffered message 2{}", default_eol, default_eol));
+
+    sink->set_buffer_size(128 * 1024);
+    REQUIRE(sink->buffer_size() == 128 * 1024);
+}
+
+TEST_CASE("custom_buffer_size_rotating", "[rotating_logger]") {
+    prepare_logdir();
+    spdlog::filename_t basename = SPDLOG_FILENAME_T(ROTATING_LOG);
+    size_t custom_buf_size = 32 * 1024;
+
+    auto logger = spdlog::rotating_logger_mt("custom_buf_rotating", basename, 1024 * 1024, 2, false, {}, custom_buf_size);
+    logger->set_pattern("%v");
+
+    auto sink = std::dynamic_pointer_cast<spdlog::sinks::rotating_file_sink_mt>(logger->sinks().front());
+    REQUIRE(sink != nullptr);
+    REQUIRE(sink->buffer_size() == custom_buf_size);
+
+    logger->info("Rotating buffered message");
+    logger->flush();
+
+    REQUIRE(get_filesize(ROTATING_LOG) > 0);
+}
+
+TEST_CASE("custom_buffer_size_daily", "[daily_logger]") {
+    prepare_logdir();
+    spdlog::filename_t basename = SPDLOG_FILENAME_T("test_logs/daily_buf_log.txt");
+    size_t custom_buf_size = 16 * 1024;
+
+    auto logger = spdlog::daily_logger_mt("custom_buf_daily", basename, 23, 59, false, 0, {}, custom_buf_size);
+    logger->set_pattern("%v");
+
+    auto sink = std::dynamic_pointer_cast<spdlog::sinks::daily_file_sink_mt>(logger->sinks().front());
+    REQUIRE(sink != nullptr);
+    REQUIRE(sink->buffer_size() == custom_buf_size);
+
+    logger->info("Daily buffered message");
+    logger->flush();
+
+    auto actual_filename = spdlog::details::os::filename_to_str(sink->filename());
+    REQUIRE(get_filesize(actual_filename) > 0);
 }
